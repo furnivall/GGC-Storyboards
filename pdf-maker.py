@@ -10,8 +10,9 @@ from reportlab.lib import colors
 from reportlab.platypus.flowables import HRFlowable
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
-registerFont(TTFont('Arial','ARIAL.ttf'))
-from dataset_builder import build_dataset
+
+registerFont(TTFont('Arial', 'ARIAL.ttf'))
+from dataset_builder import build_table
 import numpy as np
 import pandas as pd
 
@@ -56,8 +57,9 @@ def make_form():
                    forceBorder=True)
     c.save()
 
+
 def pdfmaker(sectorname, date):
-    doc = SimpleDocTemplate("C:/storyboards/" + sectorname + " - "+ date + "-email.pdf", rightMargin=10, leftMargin=10,
+    doc = SimpleDocTemplate("C:/storyboards/" + sectorname + " - " + date + "-email.pdf", rightMargin=10, leftMargin=10,
                             topMargin=10, bottomMargin=10, pagesize=(A4[1], A4[0]))
     # initialise empty list (will become our report)
     main_pdf = []
@@ -74,9 +76,9 @@ def pdfmaker(sectorname, date):
     header = Paragraph(sectorname + " - " + date + " Storyboard", styles['header'])
     headertable = Table([[logo, header]])
     headertable.setStyle([('VALIGN', (1, 0), (1, 0), 'TOP'),
-                          ('FONTSIZE', (1,0), (1,0), 24),
-                          ('TEXTCOLOR', (1,0), (1,0), colors.HexColor('#003087')),
-                          ('FONTNAME', (1,0), (1,0), 'Arial'),
+                          ('FONTSIZE', (1, 0), (1, 0), 24),
+                          ('TEXTCOLOR', (1, 0), (1, 0), colors.HexColor('#003087')),
+                          ('FONTNAME', (1, 0), (1, 0), 'Arial'),
                           ('ALIGN', (0, 0), (0, -1), 'LEFT'),
                           ('ALIGN', (1, 0), (1, 0), 'RIGHT')
                           ])
@@ -96,8 +98,8 @@ def pdfmaker(sectorname, date):
                 exec_summary += line[1]
                 continue
             line = line.strip().split(",")
-            line[0] = "<i>"+line[0]+"</i>"
-            line[5] = "<b>"+line[5]+"</b>"
+            line[0] = "<i>" + line[0] + "</i>"
+            line[5] = "<b>" + line[5] + "</b>"
             print(line)
             tabledata.append(line)
     print(tabledata)
@@ -109,76 +111,77 @@ def pdfmaker(sectorname, date):
     main_pdf.append(Spacer(0, 12))
     main_pdf.append(exec_summary)
 
-
-
     tableheaders = ['Date', 'Action', 'Timeframe', 'Responsible Person', 'Update', 'Status']
     tableheaders = [Paragraph(x, styles['tablehead']) for x in tableheaders]
     print(tableheaders)
     tabledata = [[Paragraph(x, styles['table']) for x in item] for item in tabledata]
     tabledata.insert(0, tableheaders)
 
-
     target_table = Table(tabledata,
-                   colWidths=2.45 * cm)
-    q = (len(tabledata[0])-1, len(tabledata)-1)
+                         colWidths=2.45 * cm)
+    q = (len(tabledata[0]) - 1, len(tabledata) - 1)
 
     target_table.setStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#005EB8")),
-                    ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
-                    ('FONTSIZE', (0, 1), (q[0], 1), 8),
-                    ('ALIGN', (0, 0), (q[0], q[1]), 'CENTER'),
-                     ('VALIGN', (0,0), (q[0],q[1]), 'MIDDLE'),
-                    ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
-                    ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
-                    ])
+                           ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
+                           ('FONTSIZE', (0, 1), (q[0], 1), 8),
+                           ('ALIGN', (0, 0), (q[0], q[1]), 'CENTER'),
+                           ('VALIGN', (0, 0), (q[0], q[1]), 'MIDDLE'),
+                           ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
+                           ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
+                           ])
     w, h = target_table.wrap(0, 0)
-    statmand_graph = Image('graph1.png', w-25, h+2)
+    print(w / inch, h / inch)
+    statmand_graph = Image('C:/storyboards/graph1.jpg', w - 55, h)
     wrapperTable1 = Table([[statmand_graph, target_table]])
 
     wrapperTable1.setStyle([('LEFTPADDING', (1, 0), (1, 0), 5),
-                            ('LEFTPADDING', (0,0), (0,0), 5),
-                            ('RIGHTPADDING', (0,0), (0,0), 0)]
-                           )
+                            ('LEFTPADDING', (0, 0), (0, 0), 5),
+                            ('RIGHTPADDING', (0, 0), (0, 0), 0),
+                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.black)
+                            ])
+
     main_pdf.append(wrapperTable1)
 
-
-
-    table_dataset = build_dataset()
+    table_dataset = build_table()
     data_table = Table(np.vstack((list(table_dataset), np.array(table_dataset))).tolist(), colWidths=(3.68 * cm))
-    q = (len(table_dataset.columns)-1, len(table_dataset))
+    q = (len(table_dataset.columns) - 1, len(table_dataset))
 
     print(table_dataset)
     data_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#005EB8")),
-                                     ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
-                                     ('FONTSIZE', (0, 1), (q[0], q[1]), 8),
-                                     ('ALIGN', (1, 0), (q[0], q[1]), 'CENTER'),
-                                     ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
-                                     ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
-                                     ]))
+                                    ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
+                                    ('FONTSIZE', (0, 1), (q[0], q[1]), 8),
+                                    ('ALIGN', (1, 0), (q[0], q[1]), 'CENTER'),
+                                    ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
+                                    ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
+                                    ]))
 
     w, h = data_table.wrap(0, 0)
-    absence_graph = Image('graph2.png', w-25, h+2)
 
-
+    absence_graph = Image('C:/storyboards/graph2.jpg', w-41, h)
 
     wrapperTable2 = Table([[absence_graph, data_table]])
     wrapperTable2.setStyle([('LEFTPADDING', (1, 0), (1, 0), 5),
                             ('LEFTPADDING', (0, 0), (0, 0), 5),
-                            ('RIGHTPADDING', (0, 0), (0, 0), 0)]
-                           )
+                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.black),
+                            ('RIGHTPADDING', (0, 0), (0, 0), 0)
+
+                            ])
     main_pdf.append(wrapperTable2)
     w, h = wrapperTable2.wrap(0, 0)
 
     workforce_text = Paragraph("This document was produced by the NHS GGC Workforce Planning & Analytics team. "
                                '<br/>For more information or for ad-hoc data requests, please email '
                                '<a href = "mailto:steven.munce@ggc.scot.nhs.uk">Steven Munce</a>.',
-                          styles['bottomText'])
-    workforce_blurb = Table([[workforce_text]], colWidths=w-12)
+                               styles['bottomText'])
+    workforce_blurb = Table([[workforce_text]], colWidths=w)
     workforce_blurb.setStyle([('BOX', (0, 0), (0, 0), 0.006 * inch, (0, 0, 0)),
-                           ('BOTTOMPADDING', (0, 0), (0, 0), 12),
-                           ])
+                              ('BOTTOMPADDING', (0, 0), (0, 0), 12),
+                              ])
     main_pdf.append(workforce_blurb)
 
     doc.build(main_pdf)
     print(q)
+
+
 pdfmaker("South Sector", "May 2020")
 make_form()
