@@ -19,9 +19,14 @@ def build_table():
     suspensions = {'Summary Area':'Suspensions', month:'0', 'Target':'N/A', 'Variance':'N/A'}
     ER_Cases = {'Summary Area':'Active ER Cases', month:'1', 'Target':'N/A', 'Variance':'N/A'}
     attendance_cases = {'Summary Area':'Active Attendance Cases', month:'1', 'Target':'N/A', 'Variance':'N/A'}
+    other_field = {'Summary Area': 'Area here', month: 'N/A', 'Target': 'N/A', 'Variance': 'N/A'}
 
     # append each dictionary to dataframe
     for i in [stat_mand,absence,bank_usage, KSF, inductions, suspensions, ER_Cases, attendance_cases]:
         df = df.append(i, ignore_index=True)
 
     return df
+
+
+def build_all_sectors_df():
+    pass

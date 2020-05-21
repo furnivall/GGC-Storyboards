@@ -22,7 +22,7 @@ def stat_mand_graph():
            'Security', 'Violence']
 
     plt.style.use('seaborn')
-    fig, ax = plt.subplots(figsize=(5.795, 2.25))
+    fig, ax = plt.subplots(figsize=(4.5, 2.25))
     #fig, ax = plt.subplots(figsize=(2.895, 1.125))
     # below is the list of default matplotlib styles, we can add if necessary
     # ['Solarize_Light2', '_classic_test_patch', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight',
@@ -61,7 +61,7 @@ def absence_graph():
     print(x)
     width = 0.5
     plt.style.use('seaborn')
-    fig, ax = plt.subplots(figsize=(5.795, 2.25))
+    fig, ax = plt.subplots(figsize=(5, 2.25))
 
     bar1 = ax.bar(x - 0.05 - width/3, total_abs, width/3, label="Total Absence")
     bar2 = ax.bar(x + 0.05 + width/3, short_term, width/3, label="Short Term Absence")
@@ -72,7 +72,7 @@ def absence_graph():
     ax.yaxis.set_tick_params(labelsize=6, labelcolor='#003087')
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontdict={'family':'tahoma', 'size':8, 'color':'#003087'})
-    l = ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.30), ncol=5, prop={'size': 10}, frameon=True,
+    l = ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.30), ncol=5, prop={'size': 7}, frameon=True,
                   handlelength=0.7)
     plt.tight_layout()
     plt.savefig('C:/storyboards/graph2.jpg', dpi=300)

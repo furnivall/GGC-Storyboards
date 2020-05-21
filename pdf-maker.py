@@ -84,8 +84,7 @@ def pdfmaker(sectorname, date):
                           ])
 
     main_pdf.append(headertable)
-    main_pdf.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.HexColor('#003087'),
-                               spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
+
 
     exec_summary = "<b>Executive Summary</b>: "
     tabledata = []
@@ -108,8 +107,13 @@ def pdfmaker(sectorname, date):
     exec_summary.setStyle([('BOX', (0, 0), (0, 0), 0.006 * inch, (0, 0, 0)),
                            ('BOTTOMPADDING', (0, 0), (0, 0), 12)
                            ])
-    main_pdf.append(Spacer(0, 12))
+    main_pdf.append(Spacer(0, 3))
     main_pdf.append(exec_summary)
+    main_pdf.append(Spacer(0, 3))
+    blue_line = HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.HexColor('#003087'),
+                           spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None)
+    main_pdf.append(blue_line)
+    main_pdf.append(Spacer(0, 3))
 
     tableheaders = ['Date', 'Action', 'Timeframe', 'Responsible Person', 'Update', 'Status']
     tableheaders = [Paragraph(x, styles['tablehead']) for x in tableheaders]
@@ -121,13 +125,13 @@ def pdfmaker(sectorname, date):
                          colWidths=2.45 * cm)
     q = (len(tabledata[0]) - 1, len(tabledata) - 1)
 
-    target_table.setStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#005EB8")),
+    target_table.setStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#003087")),
                            ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
                            ('FONTSIZE', (0, 1), (q[0], 1), 8),
                            ('ALIGN', (0, 0), (q[0], q[1]), 'CENTER'),
                            ('VALIGN', (0, 0), (q[0], q[1]), 'MIDDLE'),
-                           ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
-                           ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
+                           ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.HexColor("#003087")),
+                           ('BOX', (0, 0), (q[0], 0), 0.006 * inch, colors.HexColor("#003087"))
                            ])
     w, h = target_table.wrap(0, 0)
     print(w / inch, h / inch)
@@ -137,22 +141,23 @@ def pdfmaker(sectorname, date):
     wrapperTable1.setStyle([('LEFTPADDING', (1, 0), (1, 0), 5),
                             ('LEFTPADDING', (0, 0), (0, 0), 5),
                             ('RIGHTPADDING', (0, 0), (0, 0), 0),
-                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.black)
+                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.HexColor("#003087"))
                             ])
 
     main_pdf.append(wrapperTable1)
+    main_pdf.append(Spacer(0, 6))
 
     table_dataset = build_table()
     data_table = Table(np.vstack((list(table_dataset), np.array(table_dataset))).tolist(), colWidths=(3.68 * cm))
     q = (len(table_dataset.columns) - 1, len(table_dataset))
 
     print(table_dataset)
-    data_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#005EB8")),
+    data_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (q[0], 0), colors.HexColor("#003087")),
                                     ('TEXTCOLOR', (0, 0), (q[0], 0), colors.HexColor("#E8EDEE")),
                                     ('FONTSIZE', (0, 1), (q[0], q[1]), 8),
                                     ('ALIGN', (1, 0), (q[0], q[1]), 'CENTER'),
-                                    ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.black),
-                                    ('BOX', (0, 0), (q[0], 0), 0.006 * inch, (0, 0, 0))
+                                    ('BOX', (0, 1), (q[0], q[1]), 0.006 * inch, colors.HexColor("#003087")),
+                                    ('BOX', (0, 0), (q[0], 0), 0.006 * inch, colors.HexColor("#003087"))
                                     ]))
 
     w, h = data_table.wrap(0, 0)
@@ -162,11 +167,13 @@ def pdfmaker(sectorname, date):
     wrapperTable2 = Table([[absence_graph, data_table]])
     wrapperTable2.setStyle([('LEFTPADDING', (1, 0), (1, 0), 5),
                             ('LEFTPADDING', (0, 0), (0, 0), 5),
-                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.black),
+                            ('BOX', (0, 0), (0, 0), 0.006 * inch, colors.HexColor("#003087")),
                             ('RIGHTPADDING', (0, 0), (0, 0), 0)
+
 
                             ])
     main_pdf.append(wrapperTable2)
+    main_pdf.append(Spacer(0, 6))
     w, h = wrapperTable2.wrap(0, 0)
 
     workforce_text = Paragraph("This document was produced by the NHS GGC Workforce Planning & Analytics team. "
@@ -174,7 +181,7 @@ def pdfmaker(sectorname, date):
                                '<a href = "mailto:steven.munce@ggc.scot.nhs.uk">Steven Munce</a>.',
                                styles['bottomText'])
     workforce_blurb = Table([[workforce_text]], colWidths=w)
-    workforce_blurb.setStyle([('BOX', (0, 0), (0, 0), 0.006 * inch, (0, 0, 0)),
+    workforce_blurb.setStyle([('BOX', (0, 0), (0, 0), 0.006 * inch, colors.HexColor("#003087")),
                               ('BOTTOMPADDING', (0, 0), (0, 0), 12),
                               ])
     main_pdf.append(workforce_blurb)
